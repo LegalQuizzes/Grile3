@@ -1,103 +1,189 @@
 <!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz cu feedback</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Interactiv</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+      margin: 0;
       padding: 20px;
+      background-color: #f9f9f9;
     }
-    .quiz-box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
+
+    .container {
       max-width: 600px;
       margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .btn {
-      background: #28a745;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      margin-top: 20px;
-      cursor: pointer;
+
+    h1 {
+      text-align: center;
+    }
+
+    .question {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #ddd;
       border-radius: 5px;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      transition: background-color 0.2s, border-color 0.2s;
     }
-    .btn:hover {
-      background: #218838;
+
+    .answers button:hover {
+      background-color: #e0e0e0;
     }
-    .intrebare {
-      margin-bottom: 20px;
-      padding: 10px;
-      border-left: 5px solid transparent;
+
+    .correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+      color: #155724;
     }
-    .corect {
-      border-left-color: #28a745;
-      background-color: #e7f9ed;
+
+    .wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
     }
-    .gresit {
-      border-left-color: #dc3545;
-      background-color: #fde8e9;
+
+    #result {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #reset-btn {
+      display: block;
+      margin: 25px auto 0;
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #reset-btn:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 15px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="quiz-box">
-    <h2>Quiz cu feedback pe răspunsuri</h2>
-
-    <div class="intrebare" id="q1-box">
-      <p><strong>1. Ce este JavaScript?</strong></p>
-      <input type="radio" name="q1" value="0"> Limbaj de stilizare<br>
-      <input type="radio" name="q1" value="1"> Limbaj de programare<br>
-      <input type="radio" name="q1" value="0"> Sistem de operare<br>
-    </div>
-
-    <div class="intrebare" id="q2-box">
-      <p><strong>2. Cât face 9 x 3?</strong></p>
-      <input type="radio" name="q2" value="1"> 27<br>
-      <input type="radio" name="q2" value="0"> 21<br>
-      <input type="radio" name="q2" value="0"> 36<br>
-    </div>
-
-    <div class="intrebare" id="q3-box">
-      <p><strong>3. Ce folosești pentru a crea structura unei pagini web?</strong></p>
-      <input type="radio" name="q3" value="1"> HTML<br>
-      <input type="radio" name="q3" value="0"> CSS<br>
-      <input type="radio" name="q3" value="0"> Photoshop<br>
-    </div>
-
-    <button class="btn" onclick="verifica()">Verifică</button>
-    <p id="rezultat"></p>
+<div class="container">
+  <h1>Test de Cultură Generală</h1>
+  <div id="quiz">
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div id="result"></div>
   </div>
+  <button id="reset-btn" onclick="resetQuiz()">Începe din nou</button>
+</div>
 
-  <script>
-    function verifica() {
-      let scor = 0;
-
-      for (let i = 1; i <= 3; i++) {
-        let raspunsuri = document.getElementsByName("q" + i);
-        let container = document.getElementById("q" + i + "-box");
-        container.className = "intrebare"; // resetăm clasa
-
-        for (let r of raspunsuri) {
-          if (r.checked) {
-            if (r.value === "1") {
-              scor++;
-              container.classList.add("corect");
-            } else {
-              container.classList.add("gresit");
-            }
-          }
-        }
-      }
-
-      document.getElementById("rezultat").innerText =
-        "Ai obținut " + scor + " puncte din 3.";
+<script>
+  const questions = [
+    {
+      question: "Care este capitala Italiei?",
+      answers: ["Roma", "Paris", "Madrid", "Lisabona"],
+      correct: "Roma"
+    },
+    {
+      question: "Câte continente există?",
+      answers: ["5", "6", "7", "8"],
+      correct: "7"
+    },
+    {
+      question: "Cine a pictat Mona Lisa?",
+      answers: ["Michelangelo", "Leonardo da Vinci", "Van Gogh", "Rembrandt"],
+      correct: "Leonardo da Vinci"
     }
-  </script>
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+
+  function loadQuestion() {
+    const q = questions[currentIndex];
+    document.getElementById("question").textContent = q.question;
+
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = '';
+
+    q.answers.forEach(answer => {
+      const btn = document.createElement("button");
+      btn.textContent = answer;
+      btn.onclick = () => checkAnswer(btn, answer);
+      answersDiv.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(button, answer) {
+    const correct = questions[currentIndex].correct;
+    const buttons = document.querySelectorAll(".answers button");
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === correct) {
+        btn.classList.add("correct");
+      } else if (btn.textContent === answer) {
+        btn.classList.add("wrong");
+      }
+    });
+
+    if (answer === correct) score++;
+
+    setTimeout(() => {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }, 1000);
+  }
+
+  function showResult() {
+    const resultText = `Ai răspuns corect la ${score} din ${questions.length} întrebări!`;
+    document.getElementById("quiz").innerHTML = `<div id="result">${resultText}</div>`;
+  }
+
+  function resetQuiz() {
+    currentIndex = 0;
+    score = 0;
+    document.getElementById("quiz").innerHTML = `
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
+      <div id="result"></div>`;
+    loadQuestion();
+  }
+
+  // Pornește quiz-ul
+  loadQuestion();
+</script>
 
 </body>
 </html>
