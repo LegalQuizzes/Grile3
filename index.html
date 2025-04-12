@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz cu feedback</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .quiz-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .btn {
+      background: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn:hover {
+      background: #218838;
+    }
+    .intrebare {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-left: 5px solid transparent;
+    }
+    .corect {
+      border-left-color: #28a745;
+      background-color: #e7f9ed;
+    }
+    .gresit {
+      border-left-color: #dc3545;
+      background-color: #fde8e9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-box">
+    <h2>Quiz cu feedback pe răspunsuri</h2>
+
+    <div class="intrebare" id="q1-box">
+      <p><strong>1. Ce este JavaScript?</strong></p>
+      <input type="radio" name="q1" value="0"> Limbaj de stilizare<br>
+      <input type="radio" name="q1" value="1"> Limbaj de programare<br>
+      <input type="radio" name="q1" value="0"> Sistem de operare<br>
+    </div>
+
+    <div class="intrebare" id="q2-box">
+      <p><strong>2. Cât face 9 x 3?</strong></p>
+      <input type="radio" name="q2" value="1"> 27<br>
+      <input type="radio" name="q2" value="0"> 21<br>
+      <input type="radio" name="q2" value="0"> 36<br>
+    </div>
+
+    <div class="intrebare" id="q3-box">
+      <p><strong>3. Ce folosești pentru a crea structura unei pagini web?</strong></p>
+      <input type="radio" name="q3" value="1"> HTML<br>
+      <input type="radio" name="q3" value="0"> CSS<br>
+      <input type="radio" name="q3" value="0"> Photoshop<br>
+    </div>
+
+    <button class="btn" onclick="verifica()">Verifică</button>
+    <p id="rezultat"></p>
+  </div>
+
+  <script>
+    function verifica() {
+      let scor = 0;
+
+      for (let i = 1; i <= 3; i++) {
+        let raspunsuri = document.getElementsByName("q" + i);
+        let container = document.getElementById("q" + i + "-box");
+        container.className = "intrebare"; // resetăm clasa
+
+        for (let r of raspunsuri) {
+          if (r.checked) {
+            if (r.value === "1") {
+              scor++;
+              container.classList.add("corect");
+            } else {
+              container.classList.add("gresit");
+            }
+          }
+        }
+      }
+
+      document.getElementById("rezultat").innerText =
+        "Ai obținut " + scor + " puncte din 3.";
+    }
+  </script>
+
+</body>
+</html>
